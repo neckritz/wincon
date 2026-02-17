@@ -10,7 +10,6 @@ export default function ClanTester() {
   
     useEffect(() => {
       // Tags must be URL-encoded ( # becomes %23 )
-      console.log("Using Key:", import.meta.env.VITE_CR_API_KEY?.slice(0, 10) + "...");
       const encodedTag = `%23${clanTag.replace('#', '')}`;
       const url = `/api/clans/${encodedTag}`;
   
