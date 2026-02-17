@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 
-type ClanData = any;
+type ClanData = {
+  name?: string;
+  [key: string]: unknown;
+};
 export default function ClanTester() {
     const [data, setData] = useState<ClanData | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -12,15 +15,10 @@ export default function ClanTester() {
       // Tags must be URL-encoded ( # becomes %23 )
       const encodedTag = `%23${clanTag.replace('#', '')}`;
       const url = `/api/clans/${encodedTag}`;
-      const apiKey = import.meta.env.VITE_CR_API_KEY?.replace(/\s+/g, '');
   
       const fetchClan = async () => {
         try {
-          const response = await fetch(url, {
-            headers: {
-              'Authorization': `Bearer ${apiKey}`,
-            },
-          });
+          const response = await fetch(url);
   
           if (!response.ok) throw new Error(`Error: ${response.status}`);
           
@@ -39,7 +37,7 @@ export default function ClanTester() {
   
     return (
       <div style={{ padding: '20px' }}>
-        <h2>Raw Data for Clan: {data.name}</h2>
+        <h2>Raw Data for Clan: {typeof data.name === 'string' ? data.name : 'Unknown'}</h2>
         {/* This <pre> tag is the magic for a clean JSON dump */}
         <pre style={{ 
           background: '#1e1e1e', 

@@ -332,11 +332,6 @@ export default function ClanPage() {
     const encodedTag = encodeTag(clanTag);
     const headers: HeadersInit = {};
 
-    const apiKey = import.meta.env.VITE_CR_API_KEY?.replace(/\s+/g, '');
-    if (apiKey) {
-      headers.Authorization = `Bearer ${apiKey}`;
-    }
-
     const clanUrl = `/api/clans/${encodedTag}`;
     const clanWarLogUrl = `/api/clans/${encodedTag}/riverracelog`;
     const currentClanWarUrl = `/api/clans/${encodedTag}/currentriverrace`;

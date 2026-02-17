@@ -16,4 +16,5 @@ npm install
 npm run dev
 ```
 
-Set `VITE_CR_API_KEY` in `.env` for Clash Royale API access.
+Set `CR_API_KEY` in `.env` for local dev proxy access.
+In Cloudflare Pages, set `CR_API_KEY` as a project secret (Preview + Production).
