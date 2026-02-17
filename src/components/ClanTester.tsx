@@ -12,7 +12,7 @@ export default function ClanTester() {
       // Tags must be URL-encoded ( # becomes %23 )
       const encodedTag = `%23${clanTag.replace('#', '')}`;
       const url = `/api/clans/${encodedTag}`;
-      const apiKey = import.meta.env.VITE_CR_API_KEY?.trim();
+      const apiKey = import.meta.env.VITE_CR_API_KEY?.replace(/\s+/g, '');
   
       const fetchClan = async () => {
         try {

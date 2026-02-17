@@ -332,7 +332,7 @@ export default function ClanPage() {
     const encodedTag = encodeTag(clanTag);
     const headers: HeadersInit = {};
 
-    const apiKey = import.meta.env.VITE_CR_API_KEY?.trim();
+    const apiKey = import.meta.env.VITE_CR_API_KEY?.replace(/\s+/g, '');
     if (apiKey) {
       headers.Authorization = `Bearer ${apiKey}`;
     }
