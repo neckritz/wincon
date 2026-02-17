@@ -75,11 +75,22 @@ interface RankedValue<T> {
 }
 
 function normalizeTag(tag?: string): string {
-  return (tag ?? '').replace('#', '').toUpperCase();
+  if (!tag) return '';
+
+  const trimmedTag = tag.trim();
+  let decodedTag = trimmedTag;
+
+  try {
+    decodedTag = decodeURIComponent(trimmedTag);
+  } catch {
+    decodedTag = trimmedTag;
+  }
+
+  return decodedTag.replace('#', '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 }
 
 function encodeTag(tag: string): string {
-  return `%23${normalizeTag(tag)}`;
+  return encodeURIComponent(`#${normalizeTag(tag)}`);
 }
 
 function toCanonicalBattleType(type?: string): string {
@@ -321,8 +332,9 @@ export default function ClanPage() {
     const encodedTag = encodeTag(clanTag);
     const headers: HeadersInit = {};
 
-    if (import.meta.env.VITE_CR_API_KEY) {
-      headers.Authorization = `Bearer ${import.meta.env.VITE_CR_API_KEY}`;
+    const apiKey = import.meta.env.VITE_CR_API_KEY?.trim();
+    if (apiKey) {
+      headers.Authorization = `Bearer ${apiKey}`;
     }
 
     const clanUrl = `/api/clans/${encodedTag}`;

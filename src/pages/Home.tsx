@@ -5,12 +5,26 @@ export default function Home() {
   const [tag, setTag] = useState('');
   const navigate = useNavigate();
 
+  const sanitizeTag = (value: string): string => {
+    const trimmedValue = value.trim();
+    let decodedValue = trimmedValue;
+
+    try {
+      decodedValue = decodeURIComponent(trimmedValue);
+    } catch {
+      decodedValue = trimmedValue;
+    }
+
+    return decodedValue.replace('#', '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!tag) return;
     
-    // Remove the # if they typed it, as URLs don't like it raw
-    const cleanTag = tag.replace('#', '');
+    const cleanTag = sanitizeTag(tag);
+    if (!cleanTag) return;
+
     navigate(`/clan/${cleanTag}`);
   };
 
