@@ -299,6 +299,46 @@ async function fetchJson<T>(
   return response.json() as Promise<T>;
 }
 
+async function fetchJsonOrNullOn404<T>(
+  url: string,
+  headers: HeadersInit,
+  signal: AbortSignal,
+): Promise<T | null> {
+  const response = await fetch(url, { headers, signal });
+
+  if (response.status === 404) {
+    return null;
+  }
+
+  if (!response.ok) {
+    throw new Error(`API call failed (${response.status}) for ${url}`);
+  }
+
+  return response.json() as Promise<T>;
+}
+
+function buildFallbackCurrentClanWar(clan: ClanResponse): CurrentClanWarResponse {
+  return {
+    state: 'notInWar',
+    sectionIndex: 0,
+    periodType: 'training',
+    clan: {
+      tag: clan.tag,
+      name: clan.name,
+      fame: 0,
+      repairPoints: 0,
+      participants: [],
+    },
+    clans: [],
+  };
+}
+
+function buildFallbackClanWarLog(): ClanWarLogResponse {
+  return {
+    items: [],
+  };
+}
+
 async function mapWithConcurrency<T, R>(
   items: T[],
   concurrency: number,
@@ -352,25 +392,27 @@ export default function ClanPage() {
       setError(null);
 
       try {
-        const [clanJson, clanWarLogJson, currentClanWarJson, clanMembersJson] =
-          await Promise.all([
-            fetchJson<ClanResponse>(clanUrl, headers, abortController.signal),
-            fetchJson<ClanWarLogResponse>(
-              clanWarLogUrl,
-              headers,
-              abortController.signal,
-            ),
-            fetchJson<CurrentClanWarResponse>(
-              currentClanWarUrl,
-              headers,
-              abortController.signal,
-            ),
-            fetchJson<ClanMembersResponse>(
-              clanMembersUrl,
-              headers,
-              abortController.signal,
-            ),
-          ]);
+        const [clanJson, clanMembersJson] = await Promise.all([
+          fetchJson<ClanResponse>(clanUrl, headers, abortController.signal),
+          fetchJson<ClanMembersResponse>(
+            clanMembersUrl,
+            headers,
+            abortController.signal,
+          ),
+        ]);
+
+        const [clanWarLogJson, currentClanWarJson] = await Promise.all([
+          fetchJsonOrNullOn404<ClanWarLogResponse>(
+            clanWarLogUrl,
+            headers,
+            abortController.signal,
+          ),
+          fetchJsonOrNullOn404<CurrentClanWarResponse>(
+            currentClanWarUrl,
+            headers,
+            abortController.signal,
+          ),
+        ]);
 
         const memberData = await mapWithConcurrency(
           clanMembersJson.items ?? [],
@@ -416,8 +458,8 @@ export default function ClanPage() {
         if (abortController.signal.aborted) return;
 
         setClanData(clanJson);
-        setClanWarLog(clanWarLogJson);
-        setCurrentClanWar(currentClanWarJson);
+        setClanWarLog(clanWarLogJson ?? buildFallbackClanWarLog());
+        setCurrentClanWar(currentClanWarJson ?? buildFallbackCurrentClanWar(clanJson));
         setMemberBattleData(memberData);
       } catch (err) {
         if (abortController.signal.aborted) return;
