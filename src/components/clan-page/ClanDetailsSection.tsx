@@ -23,30 +23,68 @@ export default function ClanDetailsSection({
   clanData,
   mvpMember,
 }: ClanDetailsSectionProps) {
-  return (
-    <section style={{ border: '1px solid #ddd', padding: '16px' }}>
-      <h2>Clan Details</h2>
-      <h1>{clanData.name}</h1>
-      <p>{clanData.tag}</p>
-      <p>{clanData.description || 'No clan description provided.'}</p>
-      <p>Members: {clanData.members}</p>
-      <p>Clan Score: {clanData.clanScore}</p>
-      <p>War Trophies: {clanData.clanWarTrophies}</p>
+  const clanDescription = clanData.description?.trim() || 'No clan description provided.';
 
-      <h3>Current Overall MVP</h3>
-      {mvpMember ? (
-        <>
-          <p>
-            {mvpMember.name} ({mvpMember.tag})
+  return (
+    <section className="clan-hero">
+      <h1 className="clan-hero__name">{clanData.name}</h1>
+
+      <article className="clan-hero__details-card">
+        <p className="clan-hero__description">{clanDescription}</p>
+
+        <div className="clan-hero__stats">
+          <p className="clan-hero__stat">
+            <span>Tag</span>
+            <strong>{clanData.tag}</strong>
           </p>
-          <p>MVP Score: {mvpMember.mvpScore.toFixed(3)}</p>
-          <p>Average War Fame: {mvpMember.averageWarFame.toFixed(1)}</p>
-          <p>Average Winrate: {formatPercent(mvpMember.winRate)}</p>
-          <p>Donations: {mvpMember.donations}</p>
-        </>
-      ) : (
-        <p>No MVP data available.</p>
-      )}
+          <p className="clan-hero__stat">
+            <span>Members</span>
+            <strong>{clanData.members}/50</strong>
+          </p>
+          <p className="clan-hero__stat">
+            <span>Clan Score</span>
+            <strong>{clanData.clanScore}</strong>
+          </p>
+          <p className="clan-hero__stat">
+            <span>War Trophies</span>
+            <strong>{clanData.clanWarTrophies}</strong>
+          </p>
+        </div>
+
+        <section className="clan-hero__mvp" aria-label="Current overall MVP">
+          <h2 className="clan-hero__mvp-heading">Current Overall MVP</h2>
+
+          {mvpMember ? (
+            <div className="clan-hero__mvp-content">
+              <div className="clan-hero__mvp-identity">
+                <p className="clan-hero__mvp-name">{mvpMember.name}</p>
+                <p className="clan-hero__mvp-tag">{mvpMember.tag}</p>
+              </div>
+
+              <div className="clan-hero__mvp-stats">
+                <p className="clan-hero__mvp-stat">
+                  <span>MVP Score</span>
+                  <strong>{mvpMember.mvpScore.toFixed(3)}</strong>
+                </p>
+                <p className="clan-hero__mvp-stat">
+                  <span>Avg Fame</span>
+                  <strong>{mvpMember.averageWarFame.toFixed(1)}</strong>
+                </p>
+                <p className="clan-hero__mvp-stat">
+                  <span>Avg Winrate</span>
+                  <strong>{formatPercent(mvpMember.winRate)}</strong>
+                </p>
+                <p className="clan-hero__mvp-stat">
+                  <span>Donations</span>
+                  <strong>{mvpMember.donations}</strong>
+                </p>
+              </div>
+            </div>
+          ) : (
+            <p className="clan-hero__empty">No MVP data available.</p>
+          )}
+        </section>
+      </article>
     </section>
   );
 }

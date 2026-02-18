@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Home.css';
 
 export default function Home() {
   const [tag, setTag] = useState('');
@@ -21,7 +22,7 @@ export default function Home() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!tag) return;
-    
+
     const cleanTag = sanitizeTag(tag);
     if (!cleanTag) return;
 
@@ -29,20 +30,31 @@ export default function Home() {
   };
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '100px' }}>
-      <h1>wincon</h1>
-      <form onSubmit={handleSearch}>
-        <input 
-          type="text" 
-          placeholder="Enter Clan Tag (e.g. #G22Q2LPU)" 
-          value={tag}
-          onChange={(e) => setTag(e.target.value)}
-          style={{ padding: '10px', width: '250px' }}
-        />
-        <button type="submit" style={{ padding: '10px 20px', marginLeft: '10px' }}>
-          Analyze Clan
-        </button>
-      </form>
-    </div>
+    <main className="home">
+      <section className="home__card">
+        <h1 className="home__title">wincon</h1>
+        <p className="home__subtitle">Track your clan's war momentum and standout players</p>
+
+        <form className="home__form" onSubmit={handleSearch}>
+          <label className="home__label" htmlFor="clan-tag">
+            Clan Tag
+          </label>
+
+          <div className="home__form-row">
+            <input
+              id="clan-tag"
+              className="home__input"
+              type="text"
+              placeholder="Enter clan tag (e.g. #G22Q2LPU)"
+              value={tag}
+              onChange={(e) => setTag(e.target.value)}
+            />
+            <button className="home__button" type="submit">
+              Analyze Clan
+            </button>
+          </div>
+        </form>
+      </section>
+    </main>
   );
 }

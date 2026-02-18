@@ -1,0 +1,91 @@
+.home {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: clamp(1.25rem, 4vw, 2.6rem);
+}
+
+.home__card {
+  width: min(95vw, 55rem);
+  padding: clamp(0.4rem, 4vw, 2.6rem);
+  display: grid;
+  gap: 1rem;
+}
+
+.home__title {
+  margin: 0;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: 'Cabin Sketch', 'Montserrat', sans-serif;
+  font-size: clamp(4.4rem, 17vw, 12rem);
+  line-height: 0.82;
+  letter-spacing: 0.08em;
+  color: #2f67e8;
+}
+
+.home__subtitle {
+  margin: 0;
+  text-align: center;
+  color: #435d95;
+  font-size: clamp(0.95rem, 1.9vw, 1.2rem);
+}
+
+.home__form {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.home__label {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #188a49;
+  font-size: 0.78rem;
+}
+
+.home__form-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.6rem;
+}
+
+.home__input {
+  border: 2px solid #2f67e8;
+  border-radius: 14px;
+  padding: 0.75rem 0.85rem;
+  font-size: 0.98rem;
+  font-family: 'Roboto Mono', monospace;
+  color: #13254a;
+  background: #e2ecff;
+}
+
+.home__input:focus {
+  outline: 2px solid #27a45f;
+  outline-offset: 2px;
+}
+
+.home__button {
+  border: 0;
+  border-radius: 14px;
+  background: #2f67e8;
+  color: #ffffff;
+  font-family: 'Cabin Sketch', 'Montserrat', sans-serif;
+  letter-spacing: 0.03em;
+  font-size: clamp(1.05rem, 2.8vw, 1.4rem);
+  padding: 0.55rem 1rem;
+  cursor: pointer;
+}
+
+.home__button:hover {
+  background: #2454c6;
+}
+
+@media (max-width: 38rem) {
+  .home__form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .home__button {
+    width: 100%;
+  }
+}

@@ -26,6 +26,7 @@ import type {
   CurrentClanWarResponse,
   PlayerResponse,
 } from '../components/types';
+import './ClanPage.css';
 
 const ALLOWED_BATTLE_TYPES = [
   'RIVER_RACE_PVP',
@@ -241,11 +242,19 @@ function buildAwardPlacements(entries: AwardInput[], descending: boolean): Award
   );
 
   const placementsByPlace = new Map<number, AwardPlacement>();
+  const placeByRawRank = new Map<number, number>();
+  let nextPlace = 1;
 
   for (const rankedEntry of rankedEntries) {
-    if (rankedEntry.rank > 3) continue;
+    let place = placeByRawRank.get(rankedEntry.rank);
+    if (place === undefined) {
+      if (nextPlace > 3) break;
+      place = nextPlace;
+      placeByRawRank.set(rankedEntry.rank, place);
+      nextPlace += 1;
+    }
 
-    const existingPlacement = placementsByPlace.get(rankedEntry.rank);
+    const existingPlacement = placementsByPlace.get(place);
     const placementMember = {
       name: rankedEntry.item.name,
       tag: rankedEntry.item.tag,
@@ -255,8 +264,8 @@ function buildAwardPlacements(entries: AwardInput[], descending: boolean): Award
     if (existingPlacement) {
       existingPlacement.members.push(placementMember);
     } else {
-      placementsByPlace.set(rankedEntry.rank, {
-        place: rankedEntry.rank,
+      placementsByPlace.set(place, {
+        place,
         members: [placementMember],
       });
     }
@@ -775,26 +784,44 @@ export default function ClanPage() {
 
   if (error) {
     return (
-      <div style={{ color: 'red' }}>
-        Error: {error} <Link to="/">Go Home</Link>
+      <div className="clan-page clan-page--status">
+        <p className="clan-page__status clan-page__status--error">Error: {error}</p>
+        <Link className="clan-page__status-link" to="/">
+          Back to Search
+        </Link>
       </div>
     );
   }
 
   if (isLoading || !clanData || !clanWarLog || !currentClanWar) {
-    return <div>Searching for Clan #{clanTag}...</div>;
+    return (
+      <div className="clan-page clan-page--status">
+        <div className="clan-page__loader" role="status" aria-live="polite">
+          <div className="clan-page__throbber" aria-hidden="true">
+            <span className="clan-page__throbber-ring" />
+            <span className="clan-page__throbber-shield clan-page__throbber-shield--blue" />
+            <span className="clan-page__throbber-shield clan-page__throbber-shield--green" />
+            <span className="clan-page__throbber-shield clan-page__throbber-shield--red" />
+          </div>
+
+          <p className="clan-page__status">
+            Analyzing {clanTag ? `clan #${clanTag}` : 'clan data'}...
+          </p>
+          <p className="clan-page__status-hint">
+            this may take a sec
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div
-      style={{
-        padding: '20px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '16px',
-      }}
-    >
-      <Link to="/">← Back to Search</Link>
+    <div className="clan-page">
+      <Link className="clan-page__back-link" to="/" aria-label="Back to Search">
+        <span className="clan-page__back-icon" aria-hidden="true">
+          ←
+        </span>
+      </Link>
       <ClanDetailsSection clanData={clanData} mvpMember={mvpMember} />
       <ClanWarProgressSection
         progression={clanWarProgression}
