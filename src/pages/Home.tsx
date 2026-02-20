@@ -31,30 +31,36 @@ export default function Home() {
 
   return (
     <main className="home">
-      <section className="home__card">
-        <h1 className="home__title">wincon</h1>
-        <p className="home__subtitle">Track your clan's war momentum and standout players</p>
+      <div className="home__content">
+        <section className="home__card">
+          <h1 className="home__title">wincon</h1>
+          <p className="home__subtitle">Track your clan's war momentum and standout players</p>
 
-        <form className="home__form" onSubmit={handleSearch}>
-          <label className="home__label" htmlFor="clan-tag">
-            Clan Tag
-          </label>
+          <form className="home__form" onSubmit={handleSearch}>
+            <label className="home__label" htmlFor="clan-tag">
+              Clan Tag
+            </label>
 
-          <div className="home__form-row">
-            <input
-              id="clan-tag"
-              className="home__input"
-              type="text"
-              placeholder="Enter clan tag (e.g. #G22Q2LPU)"
-              value={tag}
-              onChange={(e) => setTag(e.target.value)}
-            />
-            <button className="home__button" type="submit">
-              Analyze Clan
-            </button>
-          </div>
-        </form>
-      </section>
+            <div className="home__form-row">
+              <input
+                id="clan-tag"
+                className="home__input"
+                type="text"
+                placeholder="Enter clan tag (e.g. #G22Q2LPU)"
+                value={tag}
+                onChange={(e) => setTag(e.target.value)}
+              />
+              <button className="home__button" type="submit">
+                Analyze Clan
+              </button>
+            </div>
+          </form>
+        </section>
+      </div>
+      <footer className="home__footer">
+        <p className="footer__text">Made By Ole Neckritz</p>
+        <p className="footer__text">Not officially affiliated with Supercell</p>
+      </footer>
     </main>
   );
 }

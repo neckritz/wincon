@@ -1,8 +1,14 @@
 .home {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(1.25rem, 4vw, 2.6rem);
+}
+
+.home__content {
+  flex: 1;
   display: grid;
   place-items: center;
-  padding: clamp(1.25rem, 4vw, 2.6rem);
 }
 
 .home__card {
@@ -88,4 +94,14 @@
   .home__button {
     width: 100%;
   }
+}
+
+.home__footer {
+  margin-top: auto;
+}
+
+.footer__text {
+  font-size: 0.8rem;
+  width: 100%;
+  text-align: center;
 }
