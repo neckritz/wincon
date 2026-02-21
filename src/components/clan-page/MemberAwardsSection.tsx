@@ -1,3 +1,5 @@
+import HelpHint from '../ui/HelpHint';
+
 export interface AwardPlacementMember {
   name: string;
   tag: string;
@@ -17,6 +19,7 @@ export interface MemberAward {
 
 interface MemberAwardsSectionProps {
   awards: MemberAward[];
+  battleTypesHelpText: string;
 }
 
 function getPlacementMembers(award: MemberAward, place: number): AwardPlacementMember[] {
@@ -28,13 +31,37 @@ function formatPlacementMembers(members: AwardPlacementMember[]): string {
 }
 
 function formatPlacementScores(members: AwardPlacementMember[]): string {
-  return members.map((member) => member.scoreLabel).join(', ');
+  const uniqueScoreLabels = [...new Set(members.map((member) => member.scoreLabel))];
+  return uniqueScoreLabels.join(', ');
 }
 
-export default function MemberAwardsSection({ awards }: MemberAwardsSectionProps) {
+function getFirstPlaceDensityClass(members: AwardPlacementMember[]): string {
+  const winnerNames = formatPlacementMembers(members);
+  const tieCount = members.length;
+  const charCount = winnerNames.length;
+
+  if (tieCount >= 4 || charCount > 44) return 'award-podium__first--dense';
+  if (tieCount >= 3 || charCount > 28) return 'award-podium__first--compact';
+  return '';
+}
+
+export default function MemberAwardsSection({
+  awards,
+  battleTypesHelpText,
+}: MemberAwardsSectionProps) {
   return (
     <section className="clan-section">
-      <h2 className="clan-section__heading">Member Awards</h2>
+      <h2 className="clan-section__heading">
+        <span className="clan-section__heading-label">
+          Member Awards
+          <HelpHint
+            size="large"
+            tone="blue"
+            text={battleTypesHelpText}
+            ariaLabel="Member awards calculation battle types"
+          />
+        </span>
+      </h2>
 
       <div className="awards-grid">
         {awards.map((award, index) => {
@@ -57,10 +84,14 @@ export default function MemberAwardsSection({ awards }: MemberAwardsSectionProps
                     const firstPlaceMembers = getPlacementMembers(award, 1);
                     const secondPlaceMembers = getPlacementMembers(award, 2);
                     const thirdPlaceMembers = getPlacementMembers(award, 3);
+                    const firstPlaceDensityClass =
+                      getFirstPlaceDensityClass(firstPlaceMembers);
 
                     return (
                       <div className="award-podium">
-                        <section className="award-podium__first">
+                        <section
+                          className={`award-podium__first ${firstPlaceDensityClass}`.trim()}
+                        >
                           <p className="award-podium__winner">
                             {formatPlacementMembers(firstPlaceMembers)}
                           </p>

@@ -34,7 +34,7 @@ export default function Home() {
       <div className="home__content">
         <section className="home__card">
           <h1 className="home__title">wincon</h1>
-          <p className="home__subtitle">Track your clan's war momentum and standout players</p>
+          <p className="home__subtitle">Track your Clash Royale clan's war momentum and standout players</p>
 
           <form className="home__form" onSubmit={handleSearch}>
             <label className="home__label" htmlFor="clan-tag">

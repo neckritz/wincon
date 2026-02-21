@@ -427,7 +427,7 @@ export default function ClanWarProgressSection({
                   ) : null}
                 </div>
                 <p className="panel-card__hint">
-                  Placement is scaled to the fame range for a single rough-viz graph.
+                  Placement is scaled to the fame range
                 </p>
               </>
             )}

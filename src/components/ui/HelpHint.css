@@ -1,0 +1,94 @@
+.help-hint {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.help-hint__trigger {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #435d95;
+  background: #ffffff;
+  color: #435d95;
+  font-size: 0.66rem;
+  font-weight: 700;
+  line-height: 1;
+  font-family: 'Roboto Mono', monospace;
+  cursor: help;
+  padding: 0;
+}
+
+.help-hint__trigger:focus-visible {
+  outline: 2px solid #27a45f;
+  outline-offset: 2px;
+}
+
+.help-hint__tooltip {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 0.42rem);
+  transform: translateX(-50%) translateY(-2px);
+  min-width: 12rem;
+  max-width: min(18rem, 78vw);
+  border-radius: 10px;
+  border: 1px solid #2f67e8;
+  background: #ffffff;
+  color: #13254a;
+  font-size: 0.74rem;
+  line-height: 1.3;
+  letter-spacing: normal;
+  text-transform: none;
+  font-family: 'Montserrat', 'Avenir Next', 'Gill Sans', 'Trebuchet MS', sans-serif;
+  padding: 0.45rem 0.55rem;
+  box-shadow: 0 8px 22px rgba(19, 37, 74, 0.18);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 150ms ease, transform 150ms ease, visibility 150ms ease;
+  z-index: 30;
+}
+
+.help-hint:hover .help-hint__tooltip,
+.help-hint:focus-within .help-hint__tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.help-hint--large .help-hint__trigger {
+  width: 1.22rem;
+  height: 1.22rem;
+  font-size: 0.8rem;
+}
+
+.help-hint--large .help-hint__tooltip {
+  min-width: 13.5rem;
+  font-size: 0.8rem;
+  padding: 0.5rem 0.62rem;
+}
+
+.help-hint--green .help-hint__trigger {
+  border-color: #27a45f;
+  background: #e5f9ec;
+  color: #188a49;
+}
+
+.help-hint--green .help-hint__tooltip {
+  border-color: #27a45f;
+  background: #f3fff7;
+}
+
+.help-hint--blue .help-hint__trigger {
+  border-color: #2f67e8;
+  background: #e2ecff;
+  color: #1f55cf;
+}
+
+.help-hint--blue .help-hint__tooltip {
+  border-color: #2f67e8;
+  background: #f4f8ff;
+}

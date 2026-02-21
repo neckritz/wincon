@@ -26,6 +26,7 @@ import type {
   CurrentClanWarResponse,
   PlayerResponse,
 } from '../components/types';
+import { extractClanFameThreshold } from '../utils/extractClanFameThreshold';
 import './ClanPage.css';
 
 const ALLOWED_BATTLE_TYPES = [
@@ -38,6 +39,17 @@ const ALLOWED_BATTLE_TYPES = [
   'CHALLENGE',
   'PVP2v2',
 ] as const;
+
+const BATTLE_TYPE_LABEL_BY_TYPE: Record<(typeof ALLOWED_BATTLE_TYPES)[number], string> = {
+  RIVER_RACE_PVP: 'River Race PvP',
+  RIVER_RACE_DUEL: 'River Race Duel',
+  RIVER_RACE_DUEL_COLOSSEUM: 'River Race Duel Colosseum',
+  BOAT_BATTLE: 'Boat Battle',
+  PATH_OF_LEGEND: 'Path of Legend',
+  PVP: 'PvP',
+  CHALLENGE: 'Challenge',
+  PVP2v2: 'PvP 2v2',
+};
 
 const ALLOWED_BATTLE_TYPE_SET = new Set<string>(
   ALLOWED_BATTLE_TYPES.map((battleType) => toCanonicalBattleType(battleType)),
@@ -233,6 +245,14 @@ function buildCompetitionRanks<T>(
   return rankedValues;
 }
 
+function formatNaturalList(values: string[]): string {
+  if (values.length === 0) return '';
+  if (values.length === 1) return values[0];
+  if (values.length === 2) return `${values[0]} and ${values[1]}`;
+
+  return `${values.slice(0, -1).join(', ')}, and ${values[values.length - 1]}`;
+}
+
 function buildAwardPlacements(entries: AwardInput[], descending: boolean): AwardPlacement[] {
   const rankedEntries = buildCompetitionRanks(
     entries,
@@ -275,7 +295,9 @@ function buildAwardPlacements(entries: AwardInput[], descending: boolean): Award
 }
 
 function formatDurationFromHours(hours: number): string {
-  if (!Number.isFinite(hours)) return 'No eligible battles';
+  if (!Number.isFinite(hours)) {
+    return "It's been so long, we stopped keeping record";
+  }
 
   const flooredHours = Math.max(0, Math.floor(hours));
   const days = Math.floor(flooredHours / 24);
@@ -413,6 +435,12 @@ export default function ClanPage() {
             abortController.signal,
           ),
         ]);
+
+        const extractedFameThreshold = extractClanFameThreshold(clanJson.description);
+        console.log(
+          `[wincon] Extracted fame threshold for ${clanJson.tag}:`,
+          extractedFameThreshold,
+        );
 
         const memberData = await mapWithConcurrency(
           clanMembersJson.items ?? [],
@@ -697,6 +725,11 @@ export default function ClanPage() {
     return placementSum / placements.length;
   }, [clanWarProgression]);
 
+  const extractedFameThreshold = useMemo(
+    () => extractClanFameThreshold(clanData?.description),
+    [clanData?.description],
+  );
+
   const hasActiveClanWar =
     currentClanWar !== null && currentClanWar.periodType.toLowerCase() !== 'training';
 
@@ -824,6 +857,13 @@ export default function ClanPage() {
     ];
   }, [memberStats]);
 
+  const memberAwardsBattleTypesHelpText = useMemo(() => {
+    const battleTypeLabels = ALLOWED_BATTLE_TYPES.map(
+      (battleType) => BATTLE_TYPE_LABEL_BY_TYPE[battleType],
+    );
+    return `Awards are calculated using only these battle log types: ${formatNaturalList(battleTypeLabels)}.`;
+  }, []);
+
   if (error) {
     return (
       <div className="clan-page clan-page--status">
@@ -864,7 +904,11 @@ export default function ClanPage() {
           ←
         </span>
       </Link>
-      <ClanDetailsSection clanData={clanData} mvpMember={mvpMember} />
+      <ClanDetailsSection
+        clanData={clanData}
+        mvpMember={mvpMember}
+        extractedFameThreshold={extractedFameThreshold}
+      />
       <ClanWarProgressSection
         progression={clanWarProgression}
         trophyProgression={clanWarTrophyProgression}
@@ -874,8 +918,16 @@ export default function ClanPage() {
         hasActiveClanWar={hasActiveClanWar}
         currentWarRankings={currentWarRankings}
         averageFameRankings={averageFameRankings}
+        extractedFameThreshold={extractedFameThreshold}
       />
-      <MemberAwardsSection awards={memberAwards} />
+      <MemberAwardsSection
+        awards={memberAwards}
+        battleTypesHelpText={memberAwardsBattleTypesHelpText}
+      />
+      <footer className="clan-page__footer">
+        <p className="clan-page__footer-text">Made By Ole Neckritz</p>
+        <p className="clan-page__footer-text">Not officially affiliated with Supercell</p>
+      </footer>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import type { ClanResponse } from '../types';
+import HelpHint from '../ui/HelpHint';
 
 export interface MvpMemberSummary {
   name: string;
@@ -12,6 +13,7 @@ export interface MvpMemberSummary {
 interface ClanDetailsSectionProps {
   clanData: ClanResponse;
   mvpMember: MvpMemberSummary | null;
+  extractedFameThreshold: number | null;
 }
 
 function formatPercent(value: number | null): string {
@@ -19,9 +21,15 @@ function formatPercent(value: number | null): string {
   return `${(value * 100).toFixed(1)}%`;
 }
 
+function formatFameThreshold(value: number | null): string {
+  if (value === null) return 'N/A';
+  return value.toLocaleString();
+}
+
 export default function ClanDetailsSection({
   clanData,
   mvpMember,
+  extractedFameThreshold,
 }: ClanDetailsSectionProps) {
   const clanDescription = clanData.description?.trim() || 'No clan description provided.';
 
@@ -48,6 +56,16 @@ export default function ClanDetailsSection({
           <p className="clan-hero__stat">
             <span>War Trophies</span>
             <strong>{clanData.clanWarTrophies}</strong>
+          </p>
+          <p className="clan-hero__stat">
+            <span className="clan-hero__stat-label">
+              Estimated Fame Threshold
+              <HelpHint
+                text="Estimated minimum clan war fame requirement extracted from the clan description"
+                ariaLabel="Estimated fame threshold help"
+              />
+            </span>
+            <strong>{formatFameThreshold(extractedFameThreshold)}</strong>
           </p>
         </div>
 
