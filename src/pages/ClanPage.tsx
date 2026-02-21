@@ -925,7 +925,7 @@ export default function ClanPage() {
         battleTypesHelpText={memberAwardsBattleTypesHelpText}
       />
       <footer className="clan-page__footer">
-        <p className="clan-page__footer-text">Made By Ole Neckritz</p>
+        <p className="clan-page__footer-text">Made by Ole Neckritz</p>
         <p className="clan-page__footer-text">Not officially affiliated with Supercell</p>
       </footer>
     </div>

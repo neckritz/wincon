@@ -58,7 +58,7 @@ export default function Home() {
         </section>
       </div>
       <footer className="home__footer">
-        <p className="footer__text">Made By Ole Neckritz</p>
+        <p className="footer__text">Made by Ole Neckritz</p>
         <p className="footer__text">Not officially affiliated with Supercell</p>
       </footer>
     </main>
